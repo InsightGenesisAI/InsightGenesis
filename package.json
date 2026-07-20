@@ -25,7 +25,7 @@
     "@story-protocol/core-sdk": "^1.4.4",
     "@supabase/supabase-js": "^2.105.3",
     "@web3-storage/w3up-client": "^17.3.0",
-    "axios": "^1.16.0",
+    "axios": "^1.18.0",
     "cors": "^2.8.6",
     "dotenv": "^16.6.1",
     "ethers": "^5.8.0",

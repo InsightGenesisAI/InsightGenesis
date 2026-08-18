@@ -5,6 +5,7 @@ html, body, iframe, div {
   width: 100%;
   overflow: hidden;
   border: 0;
+  font-size: 18px;
 }
 button {
   display: inline-flex;

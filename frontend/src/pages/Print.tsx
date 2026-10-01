@@ -35,8 +35,20 @@ export default () => {
   }, []);
 
   return (
-    <pre style={{ maxHeight: "100%", overflow: "auto" }}>
-      {y ? JSON.stringify(y, null, 2) : "Loading..."}
-    </pre>
+   <>
+      <style>{`@media print { .no-print { display: none !important; } html, body, pre { height: auto !important; overflow: visible !important; } }`}</style>
+      {y && (
+        <button
+          className="no-print"
+          onClick={() => window.print()}
+          style={{ position: "fixed", top: 8, right: 8 }}
+        >
+          Save as PDF
+        </button>
+      )}
+      <pre style={{ maxHeight: "100%", overflow: "auto" }}>
+        {y ? JSON.stringify(y, null, 2) : "Loading..."}
+      </pre>
+    </>
   );
 };

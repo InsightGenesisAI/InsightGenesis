@@ -55,15 +55,24 @@ export default () => {
     return () => clearInterval(t);
   }, []);
 
-  return (
+   return (
     <>
+      <style>{`@media print { .no-print { display: none !important; } }`}</style>
       {!y ? (
         <p>Start talking now, {s}s left</p>
       ) : w ? (
-        <pre>{JSON.stringify(JSON.parse(w), null, 2)}</pre>
+        <>
+          <button
+            className="no-print"
+            onClick={() => window.print()}
+            style={{ position: "fixed", top: 8, right: 8 }}
+          >
+            Save as PDF
+          </button>
+          <pre>{JSON.stringify(JSON.parse(w), null, 2)}</pre>
+        </>
       ) : (
         <p>Processing...</p>
       )}
     </>
   );
-};

@@ -11,16 +11,20 @@ let nonceLock = Promise.resolve();
 
 const { providers, Contract, Wallet } = ethers,
   { JsonRpcProvider } = providers,
-  w = new Wallet(PK, new JsonRpcProvider(pr)),
-  s = new O(w),
+  w = PK ? new Wallet(PK, new JsonRpcProvider(pr)) : null,
+  s = w ? new O(w) : null,
   q = [],
   c = await C(),
-  r = new Contract(ci, ["function deduct(address, address)"], w).connect(s),
-  t = new Contract(
-    cr,
-    ["function balanceOf(address) view returns (uint256)"],
-    w.provider,
-  );
+  r = w
+    ? new Contract(ci, ["function deduct(address, address)"], w).connect(s)
+    : null,
+  t = w
+    ? new Contract(
+        cr,
+        ["function balanceOf(address) view returns (uint256)"],
+        w.provider,
+      )
+    : null;
 let p = false;
 
 const b = async () => {
@@ -32,6 +36,7 @@ const b = async () => {
 
 export async function ref(t, f) {
   try {
+    if (!w) throw new Error("Blockchain wallet is not configured");
     if ((await dbTo(t)) && t != f) {
       await dbRef(t, f);
       await new Contract(ci, ["function setRef(address, address)"], w.provider)
@@ -45,6 +50,7 @@ export async function ref(t, f) {
 
 export async function getInfo(a) {
   try {
+    if (!t) throw new Error("Blockchain wallet is not configured");
     const [b, c] = await Promise.all([t.balanceOf(a), dbGetRef(a)]);
     return { balance: b.toString(), to: c.from || null, from: c.to || [] };
   } catch (e) {

@@ -1,10 +1,14 @@
 import { createClient as cc } from "@supabase/supabase-js";
+import WebSocket from "ws";
 import { su, SB } from "./config.js";
 import { error } from "./logger.js";
 
-const s = cc(su, SB);
+// Keep the public web server available when optional database credentials have
+// not been configured yet. Database-backed endpoints report unavailable below.
+const s = SB ? cc(su, SB, { realtime: { transport: WebSocket } }) : null;
 
 export const dbAuth = async (q, r, next) => {
+  if (!s) return r.status(503).json({ error: "Database is not configured" });
   try {
     const k = q.headers.auth,
       { data } = await s.from("keys").select("id, credit").eq("k", k).single();
@@ -104,6 +108,7 @@ export async function dbGetRef(a) {
 }
 
 export const dbLog = async (q, r, next) => {
+  if (!s) return next();
   if (q.headers.auth && !q.keyId) {
     try {
       const { data } = await s.from("keys").select("id").eq("k", q.headers.auth).single();

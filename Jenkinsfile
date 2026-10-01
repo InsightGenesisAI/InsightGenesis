@@ -51,9 +51,10 @@ pipeline {
                 returnStdout: true
               ).trim()
 
-              def last = ''
-              def f = new File("${env.STATE_DIR}/deployed-sha")
-              if (f.exists()) last = f.text.trim()
+              def last = sh(
+                script: "cat ${env.STATE_DIR}/deployed-sha 2>/dev/null || true",
+                returnStdout: true
+              ).trim()
 
               env.IG_REMOTE_SHA = remote
               env.IG_HAS_CHANGES = (remote != last) ? 'true' : 'false'
@@ -186,12 +187,8 @@ The deploy resets this tree to origin/main and would lose them. Commit \
       steps {
         // Only advance the marker after the health check passes, so a failed
         // deploy is retried on the next poll instead of being skipped.
-        script {
-          def dir = new File(env.STATE_DIR)
-          dir.mkdirs()
-          new File(dir, 'deployed-sha').text = env.IG_REMOTE_SHA
-          echo "recorded deployed sha ${env.IG_REMOTE_SHA}"
-        }
+        sh "mkdir -p ${env.STATE_DIR} && printf '%s\\n' '${env.IG_REMOTE_SHA}' > ${env.STATE_DIR}/deployed-sha"
+        echo "recorded deployed sha ${env.IG_REMOTE_SHA}"
       }
     }
   }
